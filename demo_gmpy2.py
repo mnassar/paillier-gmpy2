@@ -90,7 +90,7 @@ def test(bitlength, size):
 
 if __name__ == '__main__':
 #    you can use test(bitlength, x) that performs x basic operations on x random operands 
-#    test(1024, 10)
+    test(1024, 10)
 
     print "Generating keypair... %d bits" % 512
     priv, pub = generate_keypair(512)
