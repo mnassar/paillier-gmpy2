@@ -10,6 +10,7 @@ import sys
 import random
 import time 
 
+
 def timing(f, c=0):
     def wrap(*args):
         time1 = time.time()
@@ -46,20 +47,27 @@ def test_e_add(e,size):
 def test_e_add_cnst(e,l, size):
     e_add_cnst_tab=[0]*size
     for i in range(size):
-        e_add_cnst_tab[i]=e_add_const(pub, e[i], l[i])
+        e_add_cnst_tab[i]=e_add_const(pub, e[i], random.randrange(pub.n))
     return e_add_cnst_tab
 
 def test_e_mul_cnst(e,l, size):
     e_mul_cnst_tab=[0]*size
     for i in range(size):
-        e_mul_cnst_tab[i]=e_mul_const(pub, e[i], l[i])
+        e_mul_cnst_tab[i]=e_mul_const(pub, e[i], random.randrange(pub.n))
     return e_mul_cnst_tab
+
+def test_e_inv(e, size):
+    e_inv_tab=[0]*size
+    for i in range(size):
+        e_inv_tab[i]=invert(e[i], pub.n_sq)
+    return e_inv_tab
 
 def test(bitlength, size):    
     global priv, pub 
     print "Generating keypair... %d bits" % bitlength
     time1=time.time()
     priv, pub = generate_keypair(bitlength)
+    #print pub.n
     time2=time.time()    
     print "%.3f ms" % ((time2-time1)*1000)
     l=[0]*size
@@ -87,33 +95,38 @@ def test(bitlength, size):
     e_add_cnst_tab=t_test_e_add_cnst(e, l, size)
     t_test_e_mul_cnst=timing(test_e_mul_cnst)
     e_add_mul_tab=t_test_e_mul_cnst(e, l, size)
-
+    t_test_e_inv=timing(test_e_inv)
+    e_inv_tab=t_test_e_inv(e, size)
+#    for i in range(4):
+#        print decrypt(priv, pub, e_inv_tab[i]) == pub.n-l[i]
+        
 if __name__ == '__main__':
 #    you can use test(bitlength, x) that performs x basic operations on x random operands 
-    test(1024, 10)
+    test(1024, 100)
+    
 
-    print "Generating keypair... %d bits" % 512
-    priv, pub = generate_keypair(512)
-    x = 3
-    print "x =", x
-    print "Encrypting x..."
-    cx = encrypt(pub, x)
-    print "cx =", cx
-    
-    y = 5
-    print "y =", y
-    print "Encrypting y..."
-    cy = encrypt(pub, y)
-    print "cy =", cy
-    
-    print "Computing cx + cy..."
-    cz = e_add(pub, cx, cy)
-    print "cz =", cz
-    
-    print "Decrypting cz..."
-    z = decrypt(priv, pub, cz)
-    print "z =", z
-    
-    print "Computing decrypt((cz + 2) * 3) ..."
-    print "result =", decrypt(priv, pub,
-                              e_mul_const(pub, e_add_const(pub, cz, 2), 3))
+#    print "Generating keypair... %d bits" % 512
+#    priv, pub = generate_keypair(512)
+#    x = 3
+#    print "x =", x
+#    print "Encrypting x..."
+#    cx = encrypt(pub, x)
+#    print "cx =", cx
+#    
+#    y = 5
+#    print "y =", y
+#    print "Encrypting y..."
+#    cy = encrypt(pub, y)
+#    print "cy =", cy
+#    
+#    print "Computing cx + cy..."
+#    cz = e_add(pub, cx, cy)
+#    print "cz =", cz
+#    
+#    print "Decrypting cz..."
+#    z = decrypt(priv, pub, cz)
+#    print "z =", z
+#    
+#    print "Computing decrypt((cz + 2) * 3) ..."
+#    print "result =", decrypt(priv, pub,
+#                              e_mul_const(pub, e_add_const(pub, cz, 2), 3))
